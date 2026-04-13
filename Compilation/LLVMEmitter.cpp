@@ -68,7 +68,7 @@ namespace toy
             {
                 if (ast->variable.addressable)
                 {
-                    if (pointer) return ssa->lookup(ast->variable.id, builder, blockMap);
+                    if (pointer) return findValueInEntry(ast->variable.id);
                     return builder.CreateLoad(i64Ty, findValueInEntry(ast->variable.id));
                 }
                 return ssa->lookup(ast->variable.id, builder, blockMap);
@@ -94,8 +94,7 @@ namespace toy
             }
         case ASTNode::Kind::NOT:
             {
-                llvm::Value* zero = llvm::ConstantInt::get(i64Ty, 0);
-                return builder.CreateICmpEQ(emit64BitValue(ast->child, pointer), zero);
+                return builder.CreateICmpEQ(emit64BitValue(ast->child, pointer), builder.getInt64(0));
             }
         case ASTNode::Kind::NEGATE:
             {
